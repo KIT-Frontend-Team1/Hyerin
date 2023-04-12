@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <style>
+      .content {
+        width: 1024px;
+      }
+
+      .disp {
+        height: 200px;
+        border: 1px solid black;
+      }
+
+      .tab_host {
+        display: flex;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .tab:hover {
+        cursor: pointer;
+      }
+
+      .tab {
+        width: 200px;
+        border: 1px solid #ededed;
+      }
+
+      #list {
+        border: 1px solid #ededed;
+      }
+      .on {
+        background-color: rgb(21, 136, 151);
+        color: rgb(0, 0, 0);
+      }
+      .none {
+        display: none;
+      }
+    </style>
+  </head>
+  <body onload="changeText()">
+    <div class="content">
+      <div class="disp" id="display">
+        <form>
+          <p id="text">1.페이지가 로딩 될 때 이곳의 글씨를 변경하시오.</p>
+        </form>
+      </div>
+
+      <p>2.탭을 선택하면 선택한 탭의 배경과 글자의색이 바뀌도록 하시오</p>
+      <div class="tab_host">
+        <div class="tab">탭1</div>
+        <div class="tab">탭2</div>
+        <div class="tab">탭3</div>
+        <div class="tab">탭4</div>
+        <div class="tab">탭5</div>
+      </div>
+
+      <p>
+        3. 위의 탭 클릭시 아래의 컨텐츠중 탭과 숫자가 같은 것만 보이게 하시오.
+      </p>
+      <div class="tab_body">
+        <div class="block">탭1 컨텐츠</div>
+        <div class="block">탭3 컨텐츠</div>
+        <div class="block">탭2 컨텐츠</div>
+        <div class="block">탭5 컨텐츠</div>
+        <div class="block">탭4 컨텐츠</div>
+      </div>
+    </div>
+    <script>
+      //1번.
+      function changeText(e) {
+        const $text = document.querySelector("#text");
+        $text.innerText = "안녕";
+      }
+
+      //2번.
+      const tabs = document.querySelectorAll(".tab");
+      const tabBodies = document.querySelectorAll(".block");
+
+      function showTab(tabIndex) {
+        for (let i = 0; i < tabBodies.length; i++) {
+          if (tabBodies[i].textContent.includes(`${tabIndex}`)) {
+            tabBodies[i].classList.remove("none");
+          } else {
+            tabBodies[i].classList.add("none");
+          }
+        }
+      }
+
+      tabs.forEach(function (tab, index) {
+        tab.addEventListener("click", function () {
+          // 모든 탭의 배경색과 글자색을 원래대로 되돌린다
+          // 모든 탭을 순회하며 색을 초기화
+          tabs.forEach(function (tab) {
+            tab.classList.remove("on");
+          });
+          // 클릭된 탭의 배경색과 글자색을 변경한다
+          tab.classList.add("on");
+          // 클릭된 탭과 순서가 같은 탭 컨텐츠를 보여준다
+          // 클릭하면 모든 block을 none으로 바꿔주기
+          showTab(index + 1);
+        });
+      });
+    </script>
+  </body>
+</html>

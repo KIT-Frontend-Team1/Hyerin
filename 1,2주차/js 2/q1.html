@@ -1,0 +1,49 @@
+<!-- /*
+변수 위치 찾기
+변수 c는 메인 함수 안에서 실행되는 콜백함수 solution의 인자이다
+=> main안에서 solution호출
+변수 d는 솔루션 함수에서 전달받은 c를 다른 형태로 바꿔준다.
+=> 솔루션함수에서 전달받은 
+변수 e는 main함수의 최종 반환 값으로 향후 다른 함수에서 재사용된다.
+*/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">클릭</button>
+    <script>
+      //변수 b는 dom api selector로 다른 이벤트에서 사용된다
+      const b = document.querySelector("#btn");
+      let a = 10;
+      let e = 0;
+      function solution(num) {
+        //변수 d는 솔루션 함수에서 전달받은 c를 다른 형태로 바꿔준다.
+        let d = 10;
+        let answer = num * d; //5 * 10 ==50
+        return answer;
+      }
+
+      //변수 b는 dom api selector로 다른 이벤트에서 사용된다
+      //addEventListner안에서는 함수이름만 넣어야 하지 ()붙이면 즉시실행 된다.
+      b.addEventListener("click", parse); //60
+
+      function main() {
+        //변수 c는 메인 함수 안에서 실행되는 콜백함수 solution의 인자이다
+        let c = 5;
+        //변수 a는 main 함수 안에서 사용된다
+        e = solution(c) + a; //50 + 10 =60
+        //변수 e는 main함수의 최종 반환 값으로 향후 다른 함수에서 재사용된다.
+        return e; // 60
+      }
+      function parse() {
+        console.log(main());
+      }
+    </script>
+  </body>
+</html>
