@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <style>
+      .content {
+        width: 1024px;
+      }
+
+      .disp {
+        height: 200px;
+        border: 1px solid black;
+      }
+
+      .tab_host {
+        display: flex;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .tab:hover {
+        cursor: pointer;
+      }
+
+      .tab {
+        width: 200px;
+        border: 1px solid #ededed;
+      }
+
+      #list {
+        border: 1px solid #ededed;
+      }
+    </style>
+  </head>
+  <body>
+      <p>
+        4. 아래의 입력창에 숫자가 입력되지 않도록 하고 길이 제한은 10자로 하시오. <br />숫자가 입력된다면 숫자가 입력되었다고 alert로
+        알려주시오
+      </p>
+      <input type="text" id="te_input" maxlength="10" placeholder="글자만 입력하세요." />
+      <script>
+        //엔터키 안쳐도 반영? 
+        
+        const $input = document.querySelector('#te_input');
+        $input.addEventListener("change",notNumFunc);
+        function notNumFunc(){
+          //indexOf 사용
+          for(let i = 0 ; i < 10 ; i++){
+            if($input.value.indexOf(i) !== -1){
+              return alert('숫자가 있습니다!')
+            };
+          }
+        }
+      </script>
+      <p>
+        5.아래의 입력창에 입력 후 저장 버튼을 누르거나 엔터키를 누르면 입력한 내용이 아래의 list에 추가 되도록 하시오. <br />초기화 버튼을
+        누르면 list안의 모든 내용이 지워져야 함
+      </p>
+      <h5>6.추가된 내용을 "각 각" 수정 및 삭제 수 있게 변경하시오.</h5>
+      <form id="form">
+        <input type="text" value="" width="600" id="list_data" name="content" />
+        <button type="submit" id="send" value="show_view">저장</button>
+        <button type="reset">초기화</button>
+        <p>리스트</p>
+        <ul id="list">
+        </ul>
+      </form>
+    </div>
+    <script>
+      //이벤트 타입 : submit : 엔터키나 type="submit"을 눌렀을 떄 발생
+      const $form = document.querySelector("#form");
+      const $listData = document.querySelector("#list_data");
+      const $ul = document.querySelector("#list");
+      const $liclass = document.querySelectorAll(".liclass");
+      const $li = document.querySelectorAll("li");
+      const $resetBtn = document.querySelector("button[type=reset]");
+
+      //초기화버튼
+      $resetBtn.addEventListener("click",resetFunc);
+      //초기화 기능
+      function resetFunc(){
+        $ul.replaceChildren();
+      }
+
+      $form.addEventListener("submit",function(event){
+        paint($listData);
+      event.preventDefault()}); 
+
+
+      //새로운 글 추가함수
+      function paint(data){
+        //li라는 새로운 노드 만들기
+        const $li = document.createElement('li');
+        //li 밑에 input의 입력값으로 텍스트 노드 만들기
+        if(data.value==="") return;
+        $li.appendChild(document.createTextNode(data.value));
+        //ul태그 밑에 li만들기 
+        $ul.appendChild($li);
+
+        //수정버튼 생성
+        const correctionBtn = document.createElement("button");
+        correctionBtn.innerText = "수정";
+        $li.appendChild(correctionBtn);
+        correctionBtn.addEventListener("click",correctFunc);
+
+        //삭제버튼 생성
+        const deleteBtn  = document.createElement("button");
+        deleteBtn.innerText = "삭제";
+        $li.appendChild(deleteBtn);
+        deleteBtn.addEventListener("click",deleteFunc);
+        //인풋 내용 초기화
+        $listData.value = "";
+      };
+
+      //삭제버튼 기능
+      function deleteFunc(){
+        const removedItem = event.target.parentElement;
+        removedItem.remove();
+      }
+
+      //수정버튼 기능
+      function correctFunc(e){
+        //수정버튼을 누르면 해당 li요소가 input창으로 바뀜
+        //input창에 값을 입력받고, 그 입력값으로 새로운 
+        //li가 그자리에서 생성됨.
+        const correctli = e.target.parentElement;
+        const newInput = document.createElement("input");
+        correctli.innerText = '';
+        //수정 삭제 버튼 빼고 안에 text만 없애기 
+        //확인 버튼 생성
+        correctli.appendChild(newInput);
+        const okbtn = document.createElement("button");
+        okbtn.appendChild(document.createTextNode("확인"));
+        correctli.appendChild(okbtn);
+        
+        //수정버튼 누르면 delete함수 실행후 newInput으로 새로 paint
+        okbtn.addEventListener("click",function(){
+          deleteFunc();
+          paint(newInput);
+        })
+      }
+
+      
+      </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer type="module" src="./level2.js"></script>
+    <title>예약 고객 확인하기</title>
+  </head>
+  <body>
+    <!--input user-name에 이름을 적고, 연락처를 적으면 reservation이라는 항목에서 있는지 확인
+
+
+    1. array에서 name이 일치하는 것만 필터링
+    2. length가 0이라면? => phone넘버만 필터링해서 없으면 리턴(검색 불가)
+                      => 있으면 "일치하는 항목이 없다"
+    3. phone array에 입력한 number가 있는지 확인
+                    => 있으면 해당 예약번호를 보여줌
+                    => 없으면 "일치하는 항목이 없다"-->
+
+    <form>
+      <p>이름: <input name="user-name" /></p>
+      <p>연락처: <input name="user-phone" maxlength="13" /></p>
+      <button>예약번호 확인</button>
+    </form>
+    <p id="reservation-number"></p>
+  </body>
+</html>

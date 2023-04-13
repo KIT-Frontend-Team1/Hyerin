@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--재료명, 용량을 입력하면 그대로 표에다가 추가됨
+      같은 이름의 재료가 존재하면 테이블에 추가되지 않음
+      각각 삭제 버튼이 있어 삭제가 가능 
+    제출버튼 누르면 테이블에 있던 정보가 키, 값으로 적혀짐 -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script defer type="module" src="./level3.js"></script>
+    <title>Document</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        border: 1px solid #999;
+      }
+
+      table th,
+      td {
+        text-align: center;
+        border: 1px solid #999;
+      }
+
+      table .thead > th {
+        width: 150px;
+        padding: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="ingredient-form">
+      <p>재료명: <input name="ingredient" /></p>
+      <p>용량: <input name="weight" /></p>
+      <button id="add-button">추가</button>
+    </form>
+    <table>
+      <tr class="thead">
+        <th>재료</th>
+        <th>무게</th>
+        <th>관리</th>
+      </tr>
+      <!-- <tr>
+        <td>양파</td>
+        <td>500g</td>
+        <td>삭제</td>
+      </tr> -->
+    </table>
+    <button id="submit_button" type="button">제출</button>
+    <ul id="ingredient-list"></ul>
+    <script>
+      const $form = document.querySelector("#ingredient-form");
+      const $ingredient = document.querySelector('input[name = "ingredient"]');
+      const $weight = document.querySelector('input[name = "weight"]');
+      const $addBtn = document.querySelector("#add-button");
+      const $table = document.querySelector("table");
+      const $submitBtn = document.querySelector("#submit_button");
+      const $list = document.querySelector("ul");
+      //재료명과 용량을 적은 value를 table의 새로운 tr,td로 추가해주는 함수
+      //우선 이름이 기존의 table에 있는지 확인해주는 함수
+      $addBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        CheckName();
+        $ingredient.value = "";
+        $weight.value = "";
+      });
+
+      //재료를 표에 넣어주는 함수
+      function addIngredient() {
+        const newTr = document.createElement("tr");
+        $table.appendChild(newTr);
+        const newTd1 = document.createElement("td");
+        newTd1.appendChild(document.createTextNode($ingredient.value));
+        newTr.appendChild(newTd1);
+        const newTd2 = document.createElement("td");
+        newTd2.appendChild(document.createTextNode($weight.value));
+        newTr.appendChild(newTd2);
+        const newTd3 = document.createElement("td");
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "삭제";
+        newTd3.appendChild(deleteBtn);
+        newTr.appendChild(newTd3);
+
+        deleteBtn.addEventListener("click", Delete);
+      }
+
+      //이름이 있는지 확인하는 함수
+      function CheckName() {
+        const trNodes = document.querySelectorAll("tr");
+        //trNode의 모든 첫번째 자식노드의 text를 arr에 넣어준다
+        let ingredArr = [];
+        trNodes.forEach((node) => ingredArr.push(node.firstChild.innerText));
+        if (ingredArr.includes($ingredient.value)) {
+          alert("이미 존재하는 재료입니다");
+        } else {
+          addIngredient();
+        }
+      }
+
+      //삭제하는 함수
+      //삭제버튼 누르면 해당 요소의 부모 요소인 table이 모두 remove된다
+      function Delete(e) {
+        const deleteNode = e.target.parentNode.parentNode;
+        //removeChild는 부모요소에서 바로 밑 자식요소를 인자로 받아야 한다.
+        deleteNode.parentNode.removeChild(deleteNode);
+      }
+
+      //밑에다가 추가해주는  함수
+      //밑에다가 프린트 해주는 함수
+      $submitBtn.addEventListener("click", Paint);
+      function Paint() {
+        const trNodes = document.querySelectorAll("tr");
+        let obj = {};
+        trNodes.forEach((node) => {
+          if (!node.firstChild.innerText) {
+          } else {
+            obj[node.firstChild.innerText] = node.children[1].innerText;
+          }
+          console.log(obj);
+        });
+
+        //객체를 순회하면서 list에다가 li라는 요소를 만들어 하나씩 더해준다.
+        for (const key in obj) {
+          const item = document.createElement("li");
+          item.innerText = `${key} : ${obj[key]}`;
+          $list.appendChild(item);
+        }
+      }
+    </script>
+  </body>
+</html>
