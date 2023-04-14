@@ -40,11 +40,11 @@
         <th>무게</th>
         <th>관리</th>
       </tr>
-      <!-- <tr>
+      <tr>
         <td>양파</td>
         <td>500g</td>
         <td>삭제</td>
-      </tr> -->
+      </tr>
     </table>
     <button id="submit_button" type="button">제출</button>
     <ul id="ingredient-list"></ul>
@@ -67,7 +67,7 @@
 
       //재료를 표에 넣어주는 함수
       function addIngredient() {
-        const newTr = document.createElement("tr");
+        const newTr = document.createElement("tr"); //부모요소
         $table.appendChild(newTr);
         const newTd1 = document.createElement("td");
         newTd1.appendChild(document.createTextNode($ingredient.value));
@@ -101,6 +101,7 @@
       //삭제버튼 누르면 해당 요소의 부모 요소인 table이 모두 remove된다
       function Delete(e) {
         const deleteNode = e.target.parentNode.parentNode;
+        //text 삭제를 tr를 삭제
         //removeChild는 부모요소에서 바로 밑 자식요소를 인자로 받아야 한다.
         deleteNode.parentNode.removeChild(deleteNode);
       }

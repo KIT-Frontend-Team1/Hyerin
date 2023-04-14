@@ -44,13 +44,17 @@
         
         const $input = document.querySelector('#te_input');
         $input.addEventListener("change",notNumFunc);
+
         function notNumFunc(){
           //indexOf 사용
+
+          //isInteger
           for(let i = 0 ; i < 10 ; i++){
             if($input.value.indexOf(i) !== -1){
               return alert('숫자가 있습니다!')
             };
           }
+
         }
       </script>
       <p>
@@ -115,6 +119,7 @@
 
       //삭제버튼 기능
       function deleteFunc(){
+        //삭제버튼 클릭 => li가 parent
         const removedItem = event.target.parentElement;
         removedItem.remove();
       }
@@ -124,20 +129,21 @@
         //수정버튼을 누르면 해당 li요소가 input창으로 바뀜
         //input창에 값을 입력받고, 그 입력값으로 새로운 
         //li가 그자리에서 생성됨.
-        const correctli = e.target.parentElement;
+        const correctli = e.target.parentElement; //li
         const newInput = document.createElement("input");
         correctli.innerText = '';
         //수정 삭제 버튼 빼고 안에 text만 없애기 
         //확인 버튼 생성
         correctli.appendChild(newInput);
-        const okbtn = document.createElement("button");
+        const okbtn = document.createElement("button"); //확인버튼
         okbtn.appendChild(document.createTextNode("확인"));
         correctli.appendChild(okbtn);
         
         //수정버튼 누르면 delete함수 실행후 newInput으로 새로 paint
         okbtn.addEventListener("click",function(){
-          deleteFunc();
-          paint(newInput);
+          deleteFunc(); //그 li만 없애기, 선택한 li만 지우는 
+          paint(newInput); //input의 value으로 새로 li 생성
+          //수정 삭제
         })
       }
 

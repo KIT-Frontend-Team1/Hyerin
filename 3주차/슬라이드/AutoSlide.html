@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>배너</title>
+    <style>
+      /*glboal*/
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /*common*/
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /*banner*/
+      .banner-box {
+        width: 1080px;
+        border: 1px solid #000;
+        margin: 1rem auto;
+        overflow: hidden;
+      }
+
+      .banner-item {
+        min-width: 100%;
+        height: 300px;
+        background-color: rgb(215, 144, 185);
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .banner-list > li:nth-of-type(2) {
+        background-color: rgb(88, 130, 228);
+      }
+
+      .banner-list > li:nth-of-type(3) {
+        background-color: rgb(145, 230, 145);
+      }
+
+      /*sldie*/
+      #auto-banner > ul {
+        width: 100%;
+        display: flex;
+        transition: transform 2s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Banner</h2>
+    <!--shade banner -->
+    <div id="auto-banner" class="banner-box">
+      <ul class="banner-list">
+        <li class="banner-item flex-center">1</li>
+        <li class="banner-item flex-center">2</li>
+        <li class="banner-item flex-center">3</li>
+      </ul>
+    </div>
+    <!-- slide banner-->
+    <script>
+      const $autoBanner = document.querySelector("#auto-banner");
+      const $autobanner = document.querySelectorAll("#auto-banner>ul>li");
+      const $autoBannerList = document.querySelector(".banner-list");
+      //bannerindex는 초가 지날 때마다 1씩 증가한다.
+      //1초지날때마다 autoBannerList를 이동시킨다.
+      //autoBannerList의 위치는 offsetWidth
+
+      const $autobannerWidth = $autobanner[0].offsetWidth;
+      let autoBannerIndex = 0;
+      function autoSlide() {
+        if (autoBannerIndex >= $autobanner.length - 1) {
+          autoBannerIndex = 0;
+        } else {
+          autoBannerIndex += 1;
+        }
+        const distance = autoBannerIndex * $autobannerWidth;
+        console.log(distance);
+        $autoBannerList.style.transform = `translateX(-${distance}px)`;
+      }
+      setInterval(autoSlide, 5000);
+    </script>
+  </body>
+</html>

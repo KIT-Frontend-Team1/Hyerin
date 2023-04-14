@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>배너</title>
+    <style>
+      /*glboal*/
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /*common*/
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /*banner*/
+      .banner-box {
+        width: 1080px;
+        border: 1px solid #000;
+        margin: 1rem auto;
+        overflow: hidden;
+      }
+
+      .banner-item {
+        min-width: 100%;
+        height: 300px;
+        background-color: rgb(215, 144, 185);
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .banner-list > li:nth-of-type(2) {
+        background-color: rgb(88, 130, 228);
+      }
+
+      .banner-list > li:nth-of-type(3) {
+        background-color: rgb(145, 230, 145);
+      }
+
+      /*shade*/
+      #shade-banner > ul {
+        width: 100%;
+        height: 300px;
+        position: relative;
+      }
+
+      #shade-banner > ul > li {
+        position: absolute;
+        transition: opacity 2s;
+      }
+
+      #shade-banner > ul > li:nth-of-type(1) {
+        z-index: 300;
+      }
+
+      #shade-banner > ul > li:nth-of-type(2) {
+        z-index: 200;
+      }
+
+      #shade-banner > ul > li:nth-of-type(3) {
+        z-index: 100;
+      }
+
+      /*sldie*/
+      #slide-banner > ul {
+        width: 100%;
+        display: flex;
+        transition: transform 2s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Banner</h2>
+    <!--shade banner -->
+    <div id="shade-banner" class="banner-box">
+      <ul class="banner-list">
+        <li class="banner-item flex-center">1</li>
+        <li class="banner-item flex-center">2</li>
+        <li class="banner-item flex-center">3</li>
+      </ul>
+      <div>
+        <button class="shade-prev-btn">prev</button>
+        <button class="shade-next-btn">next</button>
+      </div>
+    </div>
+    <!-- slide banner-->
+    <div id="slide-banner" class="banner-box">
+      <ul class="banner-list">
+        <li class="banner-item flex-center">1</li>
+        <li class="banner-item flex-center">2</li>
+        <li class="banner-item flex-center">3</li>
+      </ul>
+      <div>
+        <button class="slide-prev-btn">prev</button>
+        <button class="slide-next-btn">next</button>
+      </div>
+    </div>
+    <marquee>안녕하세요</marquee>
+    <script>
+      //shade banner
+      const $shadebanner = document.querySelectorAll("#shade-banner > ul > li");
+      const $shadebannerPreBtn = document.querySelector(".shade-prev-btn");
+      const $shadebannerNextBtn = document.querySelector(".shade-next-btn");
+
+      $shadebannerPreBtn.addEventListener("click", prevShadeBanner);
+      $shadebannerNextBtn.addEventListener("click", nextShadeBanner);
+      let targetIndex = 0;
+      function prevShadeBanner() {
+        //예외처리
+        if (targetIndex <= 0) {
+          targetIndex = $shadebanner.length - 1;
+        } else {
+          targetIndex--;
+        }
+        //아래 방법은 모두 0으로 만들고 target만 1로 만듦
+        //for(let banner of $shadebanner){
+        //     banner.style.opacity = 0;
+        // }
+        // $shadebanner[targetIndex].style.opacity = 1;
+        $shadebanner.forEach((banner, index) => {
+          if (index === targetIndex) {
+            //opacity로 접근해야 .display : none은 transition이 넘지 않는다.
+            banner.style.opacity = 1;
+          } else {
+            banner.style.opacity = 0;
+          }
+        });
+      }
+
+      function nextShadeBanner() {
+        //칸이 3개이면 index가 2일때부터 적용해야 한다.
+        //예외처리
+        if (targetIndex >= $shadebanner.length - 1) {
+          targetIndex = 0;
+        } else {
+          targetIndex++;
+        }
+        $shadebanner.forEach((banner, index) => {
+          if (index === targetIndex) {
+            banner.style.opacity = 1;
+          } else {
+            banner.style.opacity = 0;
+          }
+        });
+      }
+
+      //숙제 : 기본 슬라이드 배너
+      const $slideBanner = document.querySelector("#slide-banner>.banner-list");
+      const $slidebannerPreBtn = document.querySelector(".slide-prev-btn");
+      const $slidebannerNextBtn = document.querySelector(".slide-next-btn");
+      $slidebannerPreBtn.addEventListener("click", prevSlideBanner);
+      const $slidebanner = document.querySelectorAll("#slide-banner > ul > li");
+      //offsetWidth clientWidth
+      //offsetWidth는 padding이랑 border포함
+      const $slidebannerWidth = $slidebanner[0].clientWidth;
+      console.log($slidebannerWidth);
+
+      //슬라이드 현재 인덱스
+      slidebannerIndex = 0;
+
+      $slidebannerPreBtn.addEventListener("click", prevSlideBanner);
+      $slidebannerNextBtn.addEventListener("click", nextSlideBanner);
+
+      function prevSlideBanner() {
+        if (slidebannerIndex <= 0) {
+          slidebannerIndex = $slidebanner.length - 1;
+        } else {
+          slidebannerIndex -= 1;
+        }
+        $slideBanner.style.transform = `translateX(
+          -${$slidebannerWidth * slidebannerIndex}px`;
+      }
+
+      function nextSlideBanner() {
+        if (slidebannerIndex >= $slidebanner.length) {
+          slidebannerIndex = $slidebanner.length - 1;
+        } else {
+          slidebannerIndex += 1;
+        }
+        //translateX의 인자값은 숫자여야 됨
+        $slideBanner.style.transform = `translateX(
+          -${$slidebannerWidth * slidebannerIndex}px`;
+      }
+
+      //무한 슬라이드, 오토 슬라이드 (선택)
+    </script>
+  </body>
+</html>
+
+<!-- //next버튼을 누르면 현재 배너의 opacity가 0으로 바뀜. 뒤에 겹친 2번 배너가 보임
+//이전것을 누르면 opacity가 1로 다시 바뀜. 이전의 1번 배너가 보임.
+
+//메인함수의 개수 => 버튼 개수인 2개
+//(1)prevBtn : 내가 보여줘야 하는 (이전의) li제외하고 나머지는 opacity 0하고
+//대상 li인 opacity를 1로 설정함
+//(2)nextBtn : 내가 보여줘야 하는 (다음의) li제외하고 나머지는 opacity 0하고
+//대상 li인 opacity를 1로 설정함
+//(3) 내가 보여줘야 하는 li
+//    유사배열객체 : index접근
+//    prevBtn : index - 1
+//    nextBtn : index + 1
+//(4) 예외사항
+//    index가 0이면 마지막 index로, 마지막 index이면 0으로 돌린다.
+
+//다음버튼, 이전 버튼 일떄는 index를 사용하는 것이 가장 좋다.
+//index의 기본값 -->
