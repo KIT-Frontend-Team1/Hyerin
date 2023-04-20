@@ -70,8 +70,9 @@ $photos.forEach((photo, index) => {
 //musicIndex에 맞게 배경바꿔주는 역할
 //index가 변할때마다 실행시켜줄수는 없을까?
 function changeBack(index) {
-  $main.style.background = `url(${musicListData[index].src}) no-repeat`;
-  // $main.style.background = `url('./assets/img/iu_${index}.jpg')`;
+  // $main.style.background = `url(${musicListData[index].src}) no-repeat`;
+  $main.style.background = `url('./assets/img/iu_${index}.jpg')`;
+
   $diskInner.style.backgroundColor = `${musicListData[index].color[0]}`;
 }
 

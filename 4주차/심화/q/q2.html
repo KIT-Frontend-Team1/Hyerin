@@ -89,14 +89,7 @@
       }
       .content {
         display: flex;
-      }
-      /* .content-id {
-        display: inline-block;
-        height: 30px;
-        width: 30px;
-      } */
-      .user-container {
-        /* border: 1px solid black; */
+        flex-direction: column;
       }
       .user-container > span {
         padding-left: 5px;
@@ -108,6 +101,7 @@
         color: rgb(41, 37, 47);
       }
       .content-container {
+        width: 100%;
         display: flex;
         flex-direction: column;
         padding-top: 20px;
@@ -116,11 +110,80 @@
         /* border: 1px solid blue; */
         border-top: 1px solid grey;
       }
+      .content-comment {
+        width: 100%;
+        /* border: 1px solid blue; */
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 10px;
+        background-color: rgb(244, 244, 238);
+        border-radius: 10px;
+        display: Flex;
+        align-items: center;
+      }
+      .content-comment > img {
+        width: 30px;
+        height: 30px;
+      }
+      .show-comment-button {
+        width: 100px;
+        height: 30px;
+        margin-bottom: 20px;
+      }
+      .none {
+        display: none;
+      }
+      .comment-nickname {
+        font-weight: 600;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      #post-input {
+        height: 200px;
+      }
+      #post-submit-button {
+      }
+      #new-post-container {
+        display: flex;
+        flex-direction: column;
+        width: 800px;
+      }
+      #post-submit-button {
+        width: 100px;
+        height: 40px;
+        margin-left: 350px;
+      }
+      #new-post-btn {
+        width: 100px;
+        height: 40px;
+        margin-left: 350px;
+        margin-top: 20px;
+      }
+      #post-input {
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+      .content-title {
+        font-weight: 700;
+        background-color: rgb(247, 238, 228);
+        height: 40px;
+        padding-top: 10px;
+        font-size: 22px;
+      }
+      #post-title-input {
+        height: 30px;
+      }
     </style>
   </head>
   <body>
     <div id="container">
       <div id="title">lnstragram</div>
+      <div id="new-post-container">
+        <button id="new-post-btn">new Post</button>
+        <input id="post-title-input" />
+        <input id="post-input" />
+        <button id="post-submit-button">submit</button>
+      </div>
       <ul id="post-list"></ul>
       <div id="button-container"></div>
     </div>
