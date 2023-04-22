@@ -196,6 +196,10 @@ const editFunc = (e) => {
   const newTitleInput = container.querySelector(".edit-title-input");
   const newContentInput = container.querySelector(".edit-content-input");
   const editOkbtn = container.querySelector(".edit-ok-button");
+
+  //기본의 제목과 글을 가져옴
+  newTitleInput.value = title.innerText;
+  newContentInput.value = content.innerText;
   editOkbtn.addEventListener("click", function () {
     objArr.shift();
     objArr.unshift({
