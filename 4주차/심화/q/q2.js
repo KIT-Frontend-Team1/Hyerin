@@ -1,39 +1,26 @@
 import { MockPosts } from "./faker.js";
-// console.log(MockPosts(5, 10));
 const $postList = document.querySelector("#post-list");
 const $btnContainer = document.querySelector("#button-container");
-const $contentContainer = document.querySelector(".content-container");
-// console.log(MockPosts(1)[0].id);
+let totalItemCount = MockPosts(10).length;
 console.log(MockPosts(1));
-// console.log(MockPosts(1));
-// console.log(MockPosts(200));
-//현재 currentPage를 localStorage에 저장함
-const localDataChange = (currentPage) => {
-  localStorage.setItem("currentPage", currentPage);
-};
-console.log();
-let totalItemCount = MockPosts(200).length;
-console.log(totalItemCount); //200개
-//현재 페이지 위치
-//버튼을 클릭하면 그것이 현재페이지가 됨
-let currentPage = 1;
-//하나의 페이지에 보여줄 컨텐츠
+//현재페이지는 url에서 page=뒤에서 가져온 숫자가 됨
+//새로고침시 해당 페이지를 currentPage로 저장하기 위함
+//만약 page=뒤의 숫자가 없다면(초기 렌더링시) 1로 지정
+let currentPage = new URLSearchParams(window.location.search).get("page");
+if (!currentPage) {
+  currentPage = 1;
+}
+//하나의 페이지에 보여줄 컨텐츠(조정가능)
 let onePageShow = 10;
+//한 그룹에 몇개 보여줄건지(버튼 그룹)
+let oneGroupShow = 10;
 //페이지가 총 몇개이냐.(20개임)
 let pageCount = Math.ceil(totalItemCount / onePageShow);
-//한 페이지 그룹에 몇개 보여줄지
-let oneGroupShow = 10;
-//현재 페이지 그룹이 무슨 그룹인지
-//자동으로 지정됨.
+//현재 페이지 그룹
+//1페이지 => 1그룹, 15페이지 => 2그룹
 let currentPageGroup = Math.ceil(currentPage / oneGroupShow);
 //마지막 페이지 그룹 => 현재 페이지 그룹이 이거면 다음버튼 생성 안됨
-let lastPageGroup = totalItemCount / onePageShow / oneGroupShow;
-//한 페이지의 마지막 넘버.
-// let lastNumber = currentPage * onePageShow;
-// //첫번째 number는 마지막넘버에서 현재 페이지
-// let firstNumber = (currentPage - 1) * onePageShow + 1;
-
-//버튼안의 text가 현재 페이지가 됨
+let lastPageGroup = pageCount / onePageShow;
 
 //이전 버튼 생성
 const beforeBtn = document.createElement("button");
@@ -41,30 +28,19 @@ beforeBtn.innerText = "이전";
 beforeBtn.addEventListener("click", () => {
   //기존의 버튼들 지워주기
   $btnContainer.innerHTML = "";
-  // console.log(currentPage);
-  // console.log(currentPageGroup);
   currentPageGroup -= 1;
   renderButton(currentPageGroup);
-  //가장 첫번째 페이지로 이동함
-  //   currentPage = currentPageGroup * 10 - 9;
-  currentPage = 1;
-  // console.log(currentPage);
-  // console.log(currentPageGroup);
   btnClick();
 });
 
 //다음버튼 생성
 const nextBtn = document.createElement("button");
 nextBtn.innerText = "이후";
-
 nextBtn.addEventListener("click", () => {
   //기존의 버튼들 지워주기
   $btnContainer.innerHTML = "";
-  // console.log(currentPage);
-  // console.log(currentPageGroup);
   currentPageGroup += 1;
-  currentPage = 11;
-  //다음 currentPage로 버튼을 생성함
+  //다음 currentPageGroup로 버튼을 생성함
   renderButton(currentPageGroup);
   btnClick();
 });
@@ -73,12 +49,20 @@ nextBtn.addEventListener("click", () => {
 const firstBtn = document.createElement("button");
 firstBtn.innerText = "맨처음";
 firstBtn.addEventListener("click", () => {
+  //기존 버튼, 포스트 지우기
   $btnContainer.innerHTML = "";
   $postList.innerHTML = "";
   currentPage = 1;
-  renderContent(currentPage);
-  renderButton(1);
+  currentPageGroup = 1;
+  //해당 currentPage의 url로 이동
+  //새로고침하면 데이터가 자동 변환
+  location.href = "?page=" + currentPage;
+  //페이지 전환후 실행될 코드
+  renderButton(currentPageGroup);
+  btnStyle(currentPage);
+  document.getElementById(1).classList.add("active");
   btnClick();
+  btnStyle(currentPage);
 });
 
 //마지막버튼
@@ -87,22 +71,13 @@ lastBtn.innerText = "마지막";
 lastBtn.addEventListener("click", () => {
   $btnContainer.innerHTML = "";
   $postList.innerHTML = "";
-  currentPage = pageCount;
-  renderContent(currentPage);
-  renderButton(lastPageGroup);
-  btnStyle(currentPage);
+  currentPage = 20;
+  currentPageGroup = 2;
+  location.href = "?page=" + currentPage;
+  renderButton(currentPageGroup);
+  document.getElementById(20).classList.add("active");
   btnClick();
 });
-
-//makeButton : 버튼 만들어주는 함수
-//한 페이지당 10개씩 버튼을 만들어주면 됨
-const makeButton = (id) => {
-  const $button = document.createElement("button");
-  $button.innerText = id;
-  $button.id = id;
-  $button.classList.add("number-btn");
-  $btnContainer.appendChild($button);
-};
 
 //renderButton :버튼 리스트 만드는 함수
 //currentPageGroup이 1이면 1번부터 10번까지의 버튼을 만든다.
@@ -113,7 +88,11 @@ const renderButton = (currentPageGroup) => {
     id < (currentPageGroup - 1) * 10 + 11;
     id++
   ) {
-    makeButton(id);
+    const $button = document.createElement("button");
+    $button.innerText = id;
+    $button.id = id;
+    $button.classList.add("number-btn");
+    $btnContainer.appendChild($button);
   }
   //이전/다음버튼 넣어주기
   $btnContainer.prepend(beforeBtn);
@@ -123,6 +102,7 @@ const renderButton = (currentPageGroup) => {
   $btnContainer.insertBefore(firstBtn, beforeBtn);
   $btnContainer.appendChild(nextBtn);
   $btnContainer.appendChild(lastBtn);
+
   //이전버튼이 필요한지 체크
   if (currentPageGroup === 1) {
     $btnContainer.removeChild(beforeBtn);
@@ -132,12 +112,6 @@ const renderButton = (currentPageGroup) => {
     $btnContainer.removeChild(nextBtn);
   }
 };
-{
-  /* <div class="user-container">
-<span><img class="content-author-img" src=${obj[0].User.profileImg}/></span>
-<span class="content-author">${obj[0].User.nickName}</span>
-</div> */
-}
 
 //새로운 글 작성
 const newPostBtn = document.querySelector("#new-post-btn");
@@ -145,97 +119,150 @@ const newPostContainer = document.querySelector("#new-post-container");
 const postInput = document.querySelector("#post-input");
 const submitBtn = document.querySelector("#post-submit-button");
 const titleInput = document.querySelector("#post-title-input");
+//목업데이터 변수 지정
+const objArr = MockPosts(10); // objArr 변수 추가
 
-let myPostArr = [];
-submitBtn.addEventListener("click", () => {
-  let newPost = {};
-  newPost.title = titleInput.value;
-  newPost.content = postInput.value;
-  // newPost.User = {};
-  // newPost.User.nickName = "안녕";
-  // newPost.User.profileImg = "./myimg.jpg";
-  myPostArr.push(newPost);
-  console.log(myPostArr);
-  // renderContent(myPostArr);
-});
-
-const renderContent = (myPostArr) => {
-  //만약 myPost에 값이 있다면
-  //그것을 렌더링먼저하고 나머지를 렌더링한다.
+//콘텐츠 렌더링하는 함수
+const renderContent = () => {
   $postList.innerHTML = "";
-  for (let i = 1; i <= onePageShow; i++) {
-    const obj = MockPosts(1);
-    const content = document.createElement("li");
-    content.classList.add("content");
-    content.innerHTML = `
-  <div class="post-container">
-      <div class="user-container">
-        <span><img class="content-author-img" src=${obj[0].User.profileImg}/></span>
-        <span class="content-author">${obj[0].User.nickName}</span>
-        <span class="content-time">${obj[0].createdAt}</span>
-      </div>
-      <div class="content-container">
-        <span class="content-title">${obj[0].title}</span>
-        <span class="content-content">${obj[0].content}</span>
-      </div>
-      
-      <button class="show-comment-button">comments</div>
-      <div class="comment-container"></div>
+  const content = document.createElement("li");
+  content.classList.add("content");
+  $postList.appendChild(content);
+  //목업데이터를 map해서 innerHTML로 렌더링
+  const postHTML = objArr
+    .map((obj) => {
+      return `<div class="post-container">
+    <div class="user-container">
+    <span><img class="content-author-img" src=${obj.User.profileImg}/></span>
+    <span class="content-author">${obj.User.nickName}</span>
+    <span class="content-time">${obj.createdAt}</span>
   </div>
-  `;
-    const commentBtn = content.querySelector(".show-comment-button");
-    $postList.appendChild(content);
-    const commentContainer = content.querySelector(".comment-container");
-    // commentContainer 인자로 전달
-    commentContainer.classList.add("none");
-    renderComment(obj, commentContainer);
-    showComment(commentBtn, commentContainer);
-    // } else {
-    //   //만약 myPost에 객체가 있다면
-    //   // myPostArr.forEach((myPost[0]) => {
-    //   //   makeContent(myPost[0]);
-    //   // });
-    //   makeContent(myPostArr[0]);
-    // }}
-  }
-};
-
-//댓글 보여주는 함수
-const showComment = (commentBtn, commentContainer) => {
-  commentBtn.addEventListener("click", () => {
-    commentContainer.classList.toggle("none");
+    <div class="content-container">
+      <span class="content-title">${obj.title}</span>
+      <span class="content-content">${obj.content}</span>
+    </div>
+    <div class="mypost-btn-container">
+     <button class="edit-btn">수정</button>
+     <button class="delete-btn">삭제</button>
+    </div>
+    <button class="show-comment-button">comments</button>
+    <span class="show-comment-number"></span></div>
+    <span class="comments-number"></span>
+    <div class="comment-container"></div>
+</div>
+`;
+    })
+    .join("");
+  content.innerHTML = postHTML;
+  const commentContainers = document.querySelectorAll(".comment-container"); // 모든 commentContainer 선택
+  const commentBtns = document.querySelectorAll(".show-comment-button");
+  const myPostBtns = document.querySelectorAll(".mypost-btn-container");
+  const commentNum = document.querySelectorAll(".show-comment-number");
+  const deleteBtns = document.querySelectorAll(".delete-btn");
+  const editBtns = document.querySelectorAll(".edit-btn");
+  //전체 데이터 objArr에서 forEach로 해당 콘텐츠를 뽑아 해당하는 comments를 렌더링함
+  objArr.forEach((obj, i) => {
+    renderComment(obj, commentContainers[i], commentBtns[i], commentNum[i]); // 각각의 commentContainer에 대해 renderComment 호출
+    commentContainers[i].classList.add("none");
+    myPostBtns[i].classList.add("none");
+    if (obj.myPost === true) {
+      myPostBtns[i].classList.remove("none");
+    }
+    //자기 글 삭제하는 기능
+    deleteBtns[i].addEventListener("click", deleteFunc);
+    //자기 글 수정하는 기능
+    editBtns[i].addEventListener("click", editFunc);
   });
 };
 
-//댓글 모두 렌더링 해주는 함수
-const renderComment = (obj, commentContainer) => {
-  // commentContainer 매개변수 추가
-  if (!obj[0].Comments) return;
-  for (let i = 0; i < obj[0].Comments.length; i++) {
+//자기 글 삭제하는 함수
+const deleteFunc = (e) => {
+  const targetPost = e.target.parentNode.parentNode;
+  targetPost.parentNode.removeChild(targetPost);
+};
+
+//자기 글 수정하는 함수
+const editFunc = (e) => {
+  const targetPost = e.target.parentNode.parentNode;
+  console.log(targetPost);
+  const container = targetPost.querySelector(".content-container");
+  const title = targetPost.querySelector(".content-title");
+  const content = targetPost.querySelector(".content-content");
+  container.innerHTML = "";
+  container.innerHTML = `
+  <input class="edit-title-input" placeholder="title.."/>
+  <input class="edit-content-input" placeholder="content.."/>
+  <button class="edit-ok-button">확인</button>`;
+  const newTitleInput = container.querySelector(".edit-title-input");
+  const newContentInput = container.querySelector(".edit-content-input");
+  const editOkbtn = container.querySelector(".edit-ok-button");
+  editOkbtn.addEventListener("click", function () {
+    objArr.shift();
+    objArr.unshift({
+      id: Math.floor(Math.random() * 100000),
+      title: newTitleInput.value,
+      Comments: [],
+      Post_img: [],
+      User: {
+        id: "1231",
+        nickName: "hyerin",
+        profileImg: "https://loremflickr.com/623/480",
+      },
+      content: newContentInput.value,
+      createdAt: "",
+      myPost: true,
+    });
+    content.innerHTML = "";
+    renderContent();
+  });
+};
+//제출버튼 클릭시 새로운 포스트 생성
+//이 newPost는 objArr에 추가되고 대신 마지막 post가 삭제된다.
+//이렇게 변한 objArr를 재렌더링한다.
+submitBtn.addEventListener("click", () => {
+  objArr.unshift({
+    id: Math.floor(Math.random() * 100000),
+    title: titleInput.value,
+    Comments: [],
+    Post_img: [],
+    User: {
+      id: "1231",
+      nickName: "hyerin",
+      profileImg: "https://loremflickr.com/623/480",
+    },
+    content: postInput.value,
+    createdAt: "",
+    myPost: true,
+  });
+  objArr.pop();
+  titleInput.value = "";
+  postInput.value = "";
+  renderContent();
+});
+
+//댓글 보여주는 함수
+//해당하는 댓글을 for문으로 순회하여 innerHTML로 만든다
+//각각 포스트의 commentContainer에 추가한다.
+const renderComment = (obj, commentContainer, commentBtn, commentNum) => {
+  if (!obj.Comments) return;
+  for (let i = 0; i < obj.Comments.length; i++) {
+    commentNum.innerText = `댓글 ${obj.Comments.length}개`;
     const contentComment = document.createElement("div");
-    contentComment.classList.add("content-comment"); // 클래스 추가 방법 수정
+    contentComment.classList.add("content-comment");
     contentComment.innerHTML = `
-      <span><img src=${obj[0].Comments[i].User.profileImg}></span>
-      <span class="comment-nickname">${obj[0].Comments[i].User.nickName}</span>
-      <span class="comment-content">${obj[0].Comments[i].content}</span>
+      <span><img src=${obj.Comments[i].User.profileImg}></span>
+      <span class="comment-nickname">${obj.Comments[i].User.nickName}</span>
+      <span class="comment-content">${obj.Comments[i].content}</span>
     `;
-    commentContainer.appendChild(contentComment); // commentContainer에 contentComment 추가
+    commentContainer.appendChild(contentComment);
+    commentBtn.addEventListener("click", function () {
+      commentContainer.classList.toggle("none");
+    });
   }
 };
 
-//콘첸츠 전체를 10개 렌더링하는 함수. renderContent를 사용한다.
-//선택된 currentPage의 콘텐츠들을 렌더링한다.
-// const renderContent = (currentPage) => {
-//   $postList.innerHTML = "";
-//   for (
-//     let id = (currentPage - 1) * onePageShow + 1;
-//     id <= currentPage * onePageShow;
-//     id++
-//   ) {
-//     makeContent(id);
-//   }
-// };
-
+//숫자 버튼을 클릭하면 해당 버튼의 innerText가 현재 페이지가 된다.
+//그 현재페이지로 url을 바꿔 새로고침한다.
 const btnClick = () => {
   $btnContainer.childNodes.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -245,16 +272,14 @@ const btnClick = () => {
       ) {
         console.log(btn.innerText);
         currentPage = btn.innerText;
-        renderContent(currentPage);
+        renderContent();
         btnStyle(currentPage);
         //버튼 클릭할 때마다 현재 페이지로 로컬저장소의 번호를 바꿔줌
-        localDataChange(currentPage);
+        location.href = "?page=" + currentPage;
       }
     });
   });
 };
-
-// renderContent(currentPage);
 renderButton(currentPageGroup);
 btnClick();
 //현재 선택된 버튼 스타일 바꿔주는 함수
@@ -266,91 +291,5 @@ const btnStyle = (currentPage) => {
     }
   });
 };
-//로컬저장소에 저장된 currentPage의 값을 꺼내서, currentPage라는
-//변수에 재할당
-//그 바뀐 값으로 버튼스타일과, 콘텐츠를 다시 만들어준다.
-currentPage = localStorage.getItem("currentPage") || 1;
 renderContent(currentPage);
-renderButton(currentPageGroup);
 btnStyle(currentPage);
-
-window.addEventListener("load", function () {
-  $postList.innerHTML = "";
-  renderContent(currentPage);
-  // console.log(currentPageGroup);
-  renderButton(currentPageGroup);
-  btnStyle(currentPage);
-  btnClick();
-});
-
-//글에작성된 input을
-
-/*-----------------------------------------------------------------------------------------
-
-백엔드 없이 게시판 만들기Ò
-
------------------------------------------------------------------------------------------
-
-문제1. 페이지네이션 만들기
-    총 아이템의 갯수는 totalItemCount개 입니다.
-    해당 갯수를 토대로 한 페이지당 10개의 Post가 보이는 페이지네이션을 구현해주세요
-
-    단, 현재 총 아이템의 갯수는 200개이며 10개씩 보여준다면 총 20개의 페이지가 나와야합니다.
-    그러나 이 개수는 언제든 변화될 수 있으며 만약 해당 갯수가 변화된다면 페이지네이션도 변경되어야합니다.
-
-요구사항
-    1.
-        1~20의 페이지를 한번에 보여주는 것이 아닌 10페이지 단위로 페이지를 보여주어야하며
-        10페이지에서 마지막 페이지를 클릭한다면 11~20페이지가 보여야합니다
-
-        ex)
-        1~10 > 다음버튼 > 11~20
-
-        각 버튼의 좌우의 끝에는 맨처음 페이지로 이동할 수 있는 버튼과
-        맨끝으로 이동할 수 있는 버튼이 있어야합니다.
-
-    2. 
-        페이지를 누르면 페이지에 맞는 번호가 하이라이트 되어야합니다.
-        또한, 새로고침 시에도 이 focus효과는 유지되어야합니다.
-
-        ex) 현재 페이지5
-        <<(맨처음) <(이전) 1 2 3 4 [5] 6 7 8 9 10 (다음)> (마지막)>>
-        
-        5에 focus효과 새로고침 이후에도 5에는 focus효과가 유지되어야합니다.
-        
-
-    3.  
-        페이지를 눌러 이동 되었을 때 동일한 데이터를 불러올 수 있는 backend가 없으므로
-        MockPosts를 함수를 활용하여 새로운 10개의 랜덤한 게시물을 보여주셔야 합니다.
-
------------------------------------------------------------------------------------------
-
-문제2. 게시글 CRUD 구현하기
-    게시글 구성에 필요한 가상 데이터를 생성하는 함수 MockPosts는 안에 넣은 인자의 갯수만큼 가상의 포스트 데이터를 생성하는 함수입니다.
-    해당 함수의 상세 데이터는 제가 상단에 console.log를 통해 출력해두었으니 개발자 도구로 확인해보세요 :)
-
-요구사항
-    1.
-        게시글은 페이스북 혹은 인스타그램의 형태로 한 페이지에 10개씩 보이게 됩니다.
-        댓글은 토글 형태로 "댓글 보기"를 클릭해야만 해당 댓글을 확인할 수 있습니다.
-        
-    2. 
-        각 게시물과 댓글에는 내가 작성한 글인지 알 수 있는 flag가 들어있으며
-        현재 기존에 작성된 모든 가상 데이터의 해당 flag는 false입니다.
-        그러나 만약 본인이 새로운 게시글과 댓글을 작성한다면 해당 flag는 true의 형태가 되어야합니다.
-
-    3.
-        페이지네이션과 함께 게시글의 CRUD 구현하기
-        게시글을 작성할 수 있습니다. 댓글을 작성할 수 있습니다. 새로운 게시글은 내가 작성한 것이기에 flag는 true입니다.
-    
-        * 주의)
-            백엔드가 존재하지 않기 때문에 파일 업로드 기능을 구현할 수 없기에 사진을 업로드 할 수 없습니다.
-            따라서 게시글 추가 시 올라가는 이미지의 속성인 Post_img의 경우 빈배열로 두거나 빈 값으로 두시면 됩니다 :)
-
-            게시글 작성과 댓글 작성 시 작성자의 프로필 이미지는 본인이 원하는 대체 이미지로 고정하여 대체 하시면 됩니다.
-            
-        본인이 작성한 게시글과 댓글에만 수정과 삭제 버튼이 보여야합니다.
-        삭제, 수정 버튼의 기능은 모두 적상적으로 기능이 작동 되어야합니다.
-
------------------------------------------------------------------------------------------
-*/

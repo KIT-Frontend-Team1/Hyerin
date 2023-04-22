@@ -57,22 +57,18 @@ let musicNum = 0;
 //함수를 따로 뺄때 index로 주는 부분이 막힘
 $photos.forEach((photo, index) => {
   photo.addEventListener("click", () => {
-    // console.log(index);
     musicNum = index;
     console.log(musicNum);
     selectedSong(index);
   });
 });
-// $frontBtn.addEventListener("click", function () {
-//   console.log("clicked");
-// });
 
+const $filter = document.querySelector(".filter");
 //musicIndex에 맞게 배경바꿔주는 역할
 //index가 변할때마다 실행시켜줄수는 없을까?
 function changeBack(index) {
-  // $main.style.background = `url(${musicListData[index].src}) no-repeat`;
-  $main.style.background = `url('./assets/img/iu_${index}.jpg')`;
-
+  $filter.style.background = `url(${musicListData[index].src}) no-repeat `;
+  $filter.style.backgroundPosition = "center";
   $diskInner.style.backgroundColor = `${musicListData[index].color[0]}`;
 }
 

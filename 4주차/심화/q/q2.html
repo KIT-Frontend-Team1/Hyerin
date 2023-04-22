@@ -13,16 +13,18 @@
         padding: 0;
       }
       button {
-        background-color: rgb(186, 169, 179);
+        background-color: rgb(207, 184, 224);
         border: none;
         color: white;
+        font-weight: 700;
         border-radius: 10px;
       }
       button:hover {
-        transform: scale(1.2);
+        transform: scale(1.05);
+        background-color: rgb(102, 31, 152);
       }
       .active {
-        background-color: rgb(172, 137, 216);
+        background-color: rgb(102, 31, 152);
         color: white;
       }
       #title {
@@ -34,8 +36,8 @@
         color: white;
         background-image: linear-gradient(
           to right bottom,
-          rgb(87, 141, 223),
-          rgb(248, 30, 59)
+          rgb(4, 87, 212),
+          rgb(254, 6, 39)
         );
       }
       /*콘텐츠와 버튼컨테이너 감싸는 가장 큰 div*/
@@ -47,12 +49,13 @@
         flex-direction: column;
       }
       .post-container {
-        border: 2px solid rgb(229, 178, 178);
+        border: 2px solid grey;
         border-radius: 15px;
         width: 800px;
         padding-left: 20px;
         padding-right: 20px;
         padding-top: 5px;
+        margin-bottom: 30px;
       }
       .post-id {
         /* border: 3px solid pink; */
@@ -116,7 +119,7 @@
         margin-top: 10px;
         margin-bottom: 10px;
         margin-left: 10px;
-        background-color: rgb(244, 244, 238);
+        background-color: rgb(239, 239, 239);
         border-radius: 10px;
         display: Flex;
         align-items: center;
@@ -141,8 +144,6 @@
       #post-input {
         height: 200px;
       }
-      #post-submit-button {
-      }
       #new-post-container {
         display: flex;
         flex-direction: column;
@@ -165,13 +166,62 @@
       }
       .content-title {
         font-weight: 700;
-        background-color: rgb(247, 238, 228);
-        height: 40px;
+        border-radius: 10px;
+        padding-bottom: 10px;
         padding-top: 10px;
         font-size: 22px;
       }
       #post-title-input {
         height: 30px;
+        padding-left: 20px;
+        font-size: 20px;
+      }
+      #post-input {
+        padding-left: 20px;
+        font-size: 20px;
+      }
+      .edit-btn {
+        width: 70px;
+        height: 30px;
+      }
+      .delete-btn {
+        width: 70px;
+        height: 30px;
+      }
+      .mypost-btn-container {
+        margin-bottom: 10px;
+      }
+      #new-post-title {
+        font-size: 30px;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .comment-container {
+        margin-bottom: 30px;
+        width: 800px;
+      }
+      .show-comment-number {
+        font-size: 15px;
+        margin-left: 20px;
+        color: rgb(102, 31, 152);
+      }
+      .edit-title-input {
+        width: 500px;
+        height: 40px;
+        margin-bottom: 30px;
+        padding-left: 10px;
+        font-size: 20px;
+      }
+      .edit-content-input {
+        width: 500px;
+        height: 40px;
+        margin-bottom: 30px;
+        padding-left: 10px;
+        font-size: 15px;
+      }
+      .edit-ok-button {
+        width: 130px;
+        height: 40px;
       }
     </style>
   </head>
@@ -179,9 +229,9 @@
     <div id="container">
       <div id="title">lnstragram</div>
       <div id="new-post-container">
-        <button id="new-post-btn">new Post</button>
-        <input id="post-title-input" />
-        <input id="post-input" />
+        <div id="new-post-title">New Post</div>
+        <input id="post-title-input" placeholder="title..." />
+        <input id="post-input" placeholder="content..." />
         <button id="post-submit-button">submit</button>
       </div>
       <ul id="post-list"></ul>

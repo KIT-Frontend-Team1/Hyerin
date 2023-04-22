@@ -14,10 +14,10 @@ async await을 통해 구현하고자 합니다.
 */
 
 const promise1 = () =>
-  new Promise((resolve) => {
+  new Promise((reject) => {
     setTimeout(() => {
       console.log("비동기1");
-      resolve(1);
+      reject();
     }, 3000);
   });
 

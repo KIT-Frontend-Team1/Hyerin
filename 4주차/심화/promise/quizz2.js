@@ -49,7 +49,6 @@ const promise2 = new Promise((resolve, reject) => {
   reject("비동기처리2 호출 실패");
 });
 const promise3 = new Promise((resolve, reject) => {
-  resolve("비동기처리3");
   reject("비동기처리3 호출 실패");
 });
 
