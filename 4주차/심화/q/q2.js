@@ -114,8 +114,6 @@ const renderButton = (currentPageGroup) => {
 };
 
 //새로운 글 작성
-const newPostBtn = document.querySelector("#new-post-btn");
-const newPostContainer = document.querySelector("#new-post-container");
 const postInput = document.querySelector("#post-input");
 const submitBtn = document.querySelector("#post-submit-button");
 const titleInput = document.querySelector("#post-title-input");
@@ -162,7 +160,6 @@ const renderContent = () => {
   const editBtns = document.querySelectorAll(".edit-btn");
   //전체 데이터 objArr에서 forEach로 해당 콘텐츠를 뽑아 해당하는 comments를 렌더링함
   objArr.forEach((obj, i) => {
-    renderComment(obj, commentContainers[i], commentBtns[i], commentNum[i]); // 각각의 commentContainer에 대해 renderComment 호출
     commentContainers[i].classList.add("none");
     myPostBtns[i].classList.add("none");
     if (obj.myPost === true) {
@@ -172,7 +169,29 @@ const renderContent = () => {
     deleteBtns[i].addEventListener("click", deleteFunc);
     //자기 글 수정하는 기능
     editBtns[i].addEventListener("click", editFunc);
+    renderComment(obj, commentContainers[i], commentBtns[i], commentNum[i]); // 각각의 commentContainer에 대해 renderComment 호출
   });
+};
+
+//댓글 보여주는 함수
+//해당하는 댓글을 for문으로 순회하여 innerHTML로 만든다
+//각각 포스트의 commentContainer에 추가한다.
+const renderComment = (obj, commentContainer, commentBtn, commentNum) => {
+  if (!obj.Comments) return;
+  for (let i = 0; i < obj.Comments.length; i++) {
+    commentNum.innerText = `댓글 ${obj.Comments.length}개`;
+    const contentComment = document.createElement("div");
+    contentComment.classList.add("content-comment");
+    contentComment.innerHTML = `
+      <span><img src=${obj.Comments[i].User.profileImg}></span>
+      <span class="comment-nickname">${obj.Comments[i].User.nickName}</span>
+      <span class="comment-content">${obj.Comments[i].content}</span>
+    `;
+    commentContainer.appendChild(contentComment);
+    commentBtn.addEventListener("click", function () {
+      commentContainer.classList.toggle("none");
+    });
+  }
 };
 
 //자기 글 삭제하는 함수
@@ -201,6 +220,7 @@ const editFunc = (e) => {
   newTitleInput.value = title.innerText;
   newContentInput.value = content.innerText;
   editOkbtn.addEventListener("click", function () {
+    const timeNow = new Date().toString();
     objArr.shift();
     objArr.unshift({
       id: Math.floor(Math.random() * 100000),
@@ -213,7 +233,7 @@ const editFunc = (e) => {
         profileImg: "https://loremflickr.com/623/480",
       },
       content: newContentInput.value,
-      createdAt: "",
+      createdAt: timeNow,
       myPost: true,
     });
     content.innerHTML = "";
@@ -224,6 +244,7 @@ const editFunc = (e) => {
 //이 newPost는 objArr에 추가되고 대신 마지막 post가 삭제된다.
 //이렇게 변한 objArr를 재렌더링한다.
 submitBtn.addEventListener("click", () => {
+  const timeNow = new Date().toString();
   objArr.unshift({
     id: Math.floor(Math.random() * 100000),
     title: titleInput.value,
@@ -235,7 +256,7 @@ submitBtn.addEventListener("click", () => {
       profileImg: "https://loremflickr.com/623/480",
     },
     content: postInput.value,
-    createdAt: "",
+    createdAt: timeNow,
     myPost: true,
   });
   objArr.pop();
@@ -243,27 +264,6 @@ submitBtn.addEventListener("click", () => {
   postInput.value = "";
   renderContent();
 });
-
-//댓글 보여주는 함수
-//해당하는 댓글을 for문으로 순회하여 innerHTML로 만든다
-//각각 포스트의 commentContainer에 추가한다.
-const renderComment = (obj, commentContainer, commentBtn, commentNum) => {
-  if (!obj.Comments) return;
-  for (let i = 0; i < obj.Comments.length; i++) {
-    commentNum.innerText = `댓글 ${obj.Comments.length}개`;
-    const contentComment = document.createElement("div");
-    contentComment.classList.add("content-comment");
-    contentComment.innerHTML = `
-      <span><img src=${obj.Comments[i].User.profileImg}></span>
-      <span class="comment-nickname">${obj.Comments[i].User.nickName}</span>
-      <span class="comment-content">${obj.Comments[i].content}</span>
-    `;
-    commentContainer.appendChild(contentComment);
-    commentBtn.addEventListener("click", function () {
-      commentContainer.classList.toggle("none");
-    });
-  }
-};
 
 //숫자 버튼을 클릭하면 해당 버튼의 innerText가 현재 페이지가 된다.
 //그 현재페이지로 url을 바꿔 새로고침한다.

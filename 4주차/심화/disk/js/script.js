@@ -42,9 +42,9 @@ const musicListData = [
 */
 
 const $ul = document.querySelector("ul");
-const $li = document.querySelectorAll("ul>li");
-const $photos = document.querySelectorAll("ul > li>img");
 //main은 querySelector로 주기 일반 tagname으로 하기까 에러났음
+const $li = document.querySelectorAll("li");
+const $photos = document.querySelectorAll("ul>li>img");
 const $main = document.querySelector("main");
 const $frontBtn = document.querySelector(".list_btn_group button:first-child");
 const $backBtn = document.querySelector(".list_btn_group button:last-child");
@@ -54,34 +54,32 @@ const $diskInner = document.querySelector(".disk_inner");
 const $disk = document.querySelector(".disk");
 let musicNum = 0;
 
-//함수를 따로 뺄때 index로 주는 부분이 막힘
-$photos.forEach((photo, index) => {
-  photo.addEventListener("click", () => {
-    musicNum = index;
-    console.log(musicNum);
-    selectedSong(index);
+//앨범포토 추가
+const albumPhoto = musicListData
+  .map((music, i, arr) => `<li><img src="${arr[i].src}"/></li>`)
+  .join("");
+$ul.innerHTML = albumPhoto;
+
+//배경화면 바꾼다 => 클릭이벤트로 실행한다.
+const changeBack = (index) => {
+  $main.style.background = `linear-gradient(120deg,${musicListData[index].color[0]},${musicListData[index].color[1]}`;
+  $diskInner.style.backgroundColor = `${musicListData[index].color[0]}`;
+};
+
+//앨범선택될 때마다 선택된 사진에 효과주기
+const selectedSong = (index) => {
+  $photos.forEach((photo) => {
+    photo.classList.remove("play");
   });
+  $photos[index].classList.add("play");
+};
+
+$photos.forEach((photo) => {
+  photo.addEventListener("click", console.log("jaa"));
 });
 
-const $filter = document.querySelector(".filter");
-//musicIndex에 맞게 배경바꿔주는 역할
-//index가 변할때마다 실행시켜줄수는 없을까?
-function changeBack(index) {
-  $filter.style.background = `url(${musicListData[index].src}) no-repeat `;
-  $filter.style.backgroundPosition = "center";
-  $diskInner.style.backgroundColor = `${musicListData[index].color[0]}`;
-}
-
-//앨범선택될떄마다 선택된 사진에 효과주기
-function selectedSong(index) {
-  $photos.forEach((e) => {
-    e.classList.remove("play");
-  });
-  console.log(musicNum);
-  $photos[index].classList.add("play");
-}
-//왼쪽오른쪽 노래 앨범 이동함
-$frontBtn.addEventListener("click", () => {
+//왼쪽 노래 앨범 이동함
+$frontBtn.addEventListener("click", function () {
   if (musicNum <= 0) {
     musicNum = $li.length - 1;
     selectedSong(musicNum);
@@ -90,7 +88,8 @@ $frontBtn.addEventListener("click", () => {
     selectedSong(musicNum);
   }
 });
-$backBtn.addEventListener("click", () => {
+
+$backBtn.addEventListener("click", function () {
   if (musicNum >= $li.length - 1) {
     musicNum = 0;
     selectedSong(musicNum);
@@ -100,13 +99,18 @@ $backBtn.addEventListener("click", () => {
   }
 });
 
-//애니메이션 돌아감
+// //애니메이션 돌아감
 $playBtn.addEventListener("click", () => {
   $disk.classList.add("active");
   changeBack(musicNum);
 });
 
-//애니메이션 멈춤
+// //애니메이션 멈춤
 $stopBtn.addEventListener("click", () => {
   $disk.classList.remove("active");
 });
+
+// const $img = document.querySelectorAll("li>img");
+// $img.forEach((img, i) => {
+//   changeBack(i);
+// });
